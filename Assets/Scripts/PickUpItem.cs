@@ -5,7 +5,12 @@ using UnityEngine;
 
 public class PickUpItem : MonoBehaviour
 {
-    [SerializeField] private GameObject Hand;
+    private GameObject Hand;
+
+    private void Awake()
+    {
+        Hand = GameObject.Find("Hand");
+    }
 
     public void PickUp()
     {

@@ -1,16 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using UnityEngine.Events;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private RayCastController _rayCastController;
+    private RayCastController _rayCastController;
+    private SoundManager _soundManager;
+    private WeaponManager _weaponManager;
 
-    [SerializeField] private Camera _camera;
-    [SerializeField] private GameObject _head;
-
-     private GameObject _item;
+    private Camera _camera;
+    private GameObject _head;
+    private GameObject _item, _weapon;
 
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _runSpeedCofficient;
@@ -26,6 +27,22 @@ public class PlayerController : MonoBehaviour
     private bool _isJumping;
     private bool _isGrounded;
     private bool _isPickUpItem;
+    private bool _isPickUpWeapon;
+
+    [HideInInspector] public UnityEvent Shot; 
+    [HideInInspector] public UnityEvent PickWeapon;
+    [HideInInspector] public UnityEvent DropWeapon;
+    [HideInInspector] public UnityEvent ChangeValueBullets;
+
+    private void Awake()
+    {
+        _rayCastController = gameObject.GetComponent<RayCastController>();
+        _soundManager = GameObject.FindObjectOfType<SoundManager>();
+        _weaponManager = GameObject.FindObjectOfType<WeaponManager>();
+
+        _camera = Camera.main;
+        _head = GameObject.Find("Head");
+    }
 
     private void Start()
     {
@@ -69,13 +86,21 @@ public class PlayerController : MonoBehaviour
         }
         gameObject.GetComponent<Rigidbody>().velocity = transform.TransformDirection(_velocity);
 
-        if (Input.GetKeyDown(KeyCode.E) && (_isPickUpItem == false)) 
+        if ((Input.GetKeyDown(KeyCode.E) && (_isPickUpItem == false)) || ((Input.GetKeyDown(KeyCode.E) && (_isPickUpWeapon == false))))
         {
-            if (_rayCastController._rayCastHit.collider.gameObject.GetComponent<PickUpItem>())
+            if (_rayCastController._rayCastHit.collider.gameObject.GetComponent<PickUpItem>() && _rayCastController.Distance <= 2f)
             {
                 _rayCastController._rayCastHit.collider.gameObject.GetComponent<PickUpItem>().PickUp();
                 _item = _rayCastController._rayCastHit.collider.gameObject;
                 _isPickUpItem = true;
+            }
+
+            if (_rayCastController._rayCastHit.collider.gameObject.GetComponent<PickUpWeapon>() && _rayCastController.Distance <= 2f)
+            {
+                _rayCastController._rayCastHit.collider.gameObject.GetComponent<PickUpWeapon>().PickUp();
+                _weapon = _rayCastController._rayCastHit.collider.gameObject;
+                _isPickUpWeapon = true;
+                PickWeapon.Invoke();
             }
 
         }
@@ -85,6 +110,30 @@ public class PlayerController : MonoBehaviour
             _item.GetComponent<PickUpItem>().PickOff();
             _isPickUpItem = false;
         }
+
+        if (Input.GetKeyDown(KeyCode.F) && (_isPickUpWeapon == true))
+        {
+            _weapon.GetComponent<PickUpWeapon>().PickOff();
+            _isPickUpWeapon = false;
+            DropWeapon.Invoke();
+        }
+
+        if (Input.GetMouseButtonDown(0) && (_isPickUpWeapon == true))
+        {
+            _weaponManager.shot();
+            ChangeValueBullets.Invoke();
+            Shot.Invoke();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R) && (_isPickUpWeapon == true))
+        {
+            _weaponManager.reload();
+            _soundManager.PistolReload();
+            ChangeValueBullets.Invoke();
+        }
+
+        
+
     }
 
     private void FixedUpdate()
@@ -98,7 +147,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             _isGrounded = false;
-            _velocity.y = -2;
+            //_velocity.y = -5;
         }
     }
 
