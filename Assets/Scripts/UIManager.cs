@@ -10,12 +10,12 @@ public class UIManager : MonoBehaviour
     private PickUpController _pickUpController;
     private WeaponManager _weaponManager;
 
-    private GameObject _UIbullets;
+    private GameObject _bulletsUI;
     private TextMeshProUGUI _bullets;
 
     private void Awake()
     {
-        _UIbullets = GameObject.Find("BulletsUI");
+        _bulletsUI = GameObject.Find("BulletsUI");
         _bullets = GameObject.Find("Bullets").GetComponent<TextMeshProUGUI>();
         _pickUpController = GameObject.FindObjectOfType<PickUpController>();
         _weaponManager = GameObject.FindObjectOfType<WeaponManager>();
@@ -25,27 +25,27 @@ public class UIManager : MonoBehaviour
         _weaponManager.ShotWithPatrons.AddListener(ChangeValueBullets);
         _weaponManager.Reload.AddListener(ChangeValueBullets);
 
-        _UIbullets.SetActive(false);
+        _bulletsUI.SetActive(false);
     }
 
     private void Start()
     {
-        _bullets.text = _weaponManager._currentBullets.ToString() + "/" + _weaponManager._bullets.ToString();
+        ChangeValueBullets();
     }
 
     private void PickWeapon()
     {
-        _UIbullets.SetActive(true);
-        _bullets.text = _weaponManager._currentBullets.ToString() + "/" + _weaponManager._bullets.ToString();
+        _bulletsUI.SetActive(true);
+        ChangeValueBullets();
     }
     private void DropWeapon()
     {
-        _UIbullets.SetActive(false);
+        _bulletsUI.SetActive(false);
     }
 
     private void ChangeValueBullets()
     {
-        _bullets.text = _weaponManager._currentBullets.ToString() + "/" + _weaponManager._bullets.ToString();
+        _bullets.text = _weaponManager._currentPatrons.ToString() + "/" + _weaponManager._patrons.ToString();
     }
 
 }

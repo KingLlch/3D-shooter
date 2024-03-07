@@ -9,9 +9,10 @@ public class WeaponManager : MonoBehaviour
     private PlayerController _playerController;
     private PickUpController _pickUpController;
 
-    public int _currentBullets = 0;
-    public int _maxBullets = 30;
-    public int _bullets = 200;
+    public float _damage ;
+    public int _currentPatrons = 0;
+    public int _maxPatrons = 30;
+    public int _patrons = 200;
 
     [HideInInspector] public UnityEvent ShotWithPatrons;
     [HideInInspector] public UnityEvent ShotWithoutPatrons;
@@ -30,9 +31,9 @@ public class WeaponManager : MonoBehaviour
     {
         if (_pickUpController._isPickUpWeapon == true)
         {
-            if (_currentBullets > 0)
+            if (_currentPatrons > 0)
             {
-                _currentBullets--;
+                _currentPatrons--;
                 ShotWithPatrons.Invoke();
             }
 
@@ -45,26 +46,16 @@ public class WeaponManager : MonoBehaviour
     {
         if (_pickUpController._isPickUpWeapon == true)
         {
-            if (_bullets <= 0) return;
-
-            if ((_bullets - _maxBullets - _currentBullets) >= 0)
+            if ((_patrons - _maxPatrons + _currentPatrons) >= 0)
             {
-                _bullets -= (_maxBullets - _currentBullets);
-                _currentBullets = _maxBullets;
+                _patrons -= (_maxPatrons - _currentPatrons);
+                _currentPatrons = _maxPatrons;
             }
 
             else
             {
-                _currentBullets += _bullets;
-                _bullets -= _maxBullets - _currentBullets;
-
-                if (_bullets < 0)
-                {
-                    _bullets = 0;
-                    return;
-                }
-
-                _currentBullets = _maxBullets;
+                _currentPatrons += _patrons;
+                _patrons = 0;
             }
 
             Reload.Invoke();

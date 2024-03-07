@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             _isGrounded = false;
-            //_velocity.y = -5;
+            _velocity.y = 0;
         }
     }
 

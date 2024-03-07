@@ -8,6 +8,7 @@ public class PickUpController : MonoBehaviour
 {
     private PlayerController _playerController;
     private RayCastManager _rayCastManager;
+    private WeaponManager _weaponManager;
 
     private GameObject _item, _weapon;
     private bool _isPickUpItem;
@@ -20,6 +21,7 @@ public class PickUpController : MonoBehaviour
     {
         _playerController = GameObject.FindObjectOfType<PlayerController>();
         _rayCastManager = GameObject.FindObjectOfType<RayCastManager>();
+        _weaponManager = GameObject.FindObjectOfType<WeaponManager>();
 
         _playerController.DropItemButtonDown.AddListener(DropItem);
         _playerController.DropWeaponButtonDown.AddListener(DropWeapon);
@@ -30,7 +32,7 @@ public class PickUpController : MonoBehaviour
     {
         if (_isPickUpItem == true)
         {
-            _item.GetComponent<PickUpItem>().PickOff();
+            _item.GetComponent<Item>().PickOff();
             _isPickUpItem = false;
         }
     }
@@ -39,8 +41,13 @@ public class PickUpController : MonoBehaviour
     {
         if (_isPickUpWeapon == true)
         {
-            _weapon.GetComponent<PickUpWeapon>().PickOff();
+            _weapon.GetComponent<Weapon>().PickOff();
             _isPickUpWeapon = false;
+
+            _weapon.GetComponent<RotateObject>().enabled = true;
+
+            _weapon.GetComponent<Weapon>()._currentPatrons = _weaponManager._currentPatrons;
+            _weapon.GetComponent<Weapon>()._maxPatrons = _weaponManager._maxPatrons;
 
             PickOffWeapon.Invoke();
         }
@@ -48,20 +55,28 @@ public class PickUpController : MonoBehaviour
 
     private void PickWeaponOrItem()
     {
-        if ((_isPickUpItem == false) || (_isPickUpWeapon == false))
+        if (_isPickUpItem == false)
         {
-            if (_rayCastManager._rayCastHit.collider.gameObject.GetComponent<PickUpItem>() && _rayCastManager.Distance <= 2f)
+            if (_rayCastManager._rayCastHit.collider.gameObject.GetComponent<Item>() && _rayCastManager.Distance <= 2f)
             {
-                _rayCastManager._rayCastHit.collider.gameObject.GetComponent<PickUpItem>().PickUp();
+                _rayCastManager._rayCastHit.collider.gameObject.GetComponent<Item>().PickUp();
                 _item = _rayCastManager._rayCastHit.collider.gameObject;
                 _isPickUpItem = true;
             }
+        }
 
-            if (_rayCastManager._rayCastHit.collider.gameObject.GetComponent<PickUpWeapon>() && _rayCastManager.Distance <= 2f)
+        if(_isPickUpWeapon == false)
+        {
+            if (_rayCastManager._rayCastHit.collider.gameObject.GetComponent<Weapon>() && _rayCastManager.Distance <= 2f)
             {
-                _rayCastManager._rayCastHit.collider.gameObject.GetComponent<PickUpWeapon>().PickUp();
+                _rayCastManager._rayCastHit.collider.gameObject.GetComponent<Weapon>().PickUp();
                 _weapon = _rayCastManager._rayCastHit.collider.gameObject;
                 _isPickUpWeapon = true;
+
+                _weapon.GetComponent<RotateObject>().enabled = false;
+                _weaponManager._damage = _weapon.GetComponent<Weapon>()._damage;
+                _weaponManager._currentPatrons = _weapon.GetComponent<Weapon>()._currentPatrons;
+                _weaponManager._maxPatrons = _weapon.GetComponent<Weapon>()._maxPatrons;
 
                 PickUpWeapon.Invoke();
             }
