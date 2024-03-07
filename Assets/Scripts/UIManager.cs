@@ -7,21 +7,24 @@ using Unity.VisualScripting;
 
 public class UIManager : MonoBehaviour
 {
+    private PickUpController _pickUpController;
+    private WeaponManager _weaponManager;
+
     private GameObject _UIbullets;
     private TextMeshProUGUI _bullets;
-    private WeaponManager _weaponManager;
-    private PlayerController _playerController;
 
     private void Awake()
     {
         _UIbullets = GameObject.Find("BulletsUI");
         _bullets = GameObject.Find("Bullets").GetComponent<TextMeshProUGUI>();
-        _playerController = GameObject.Find("Player").GetComponent<PlayerController>();
+        _pickUpController = GameObject.FindObjectOfType<PickUpController>();
         _weaponManager = GameObject.FindObjectOfType<WeaponManager>();
 
-        _playerController.ChangeValueBullets.AddListener(changeValueBullets);
-        _playerController.PickWeapon.AddListener(PickWeapon);
-        _playerController.DropWeapon.AddListener(DropWeapon);
+        _pickUpController.PickUpWeapon.AddListener(PickWeapon);
+        _pickUpController.PickOffWeapon.AddListener(DropWeapon);
+        _weaponManager.ShotWithPatrons.AddListener(ChangeValueBullets);
+        _weaponManager.Reload.AddListener(ChangeValueBullets);
+
         _UIbullets.SetActive(false);
     }
 
@@ -40,7 +43,7 @@ public class UIManager : MonoBehaviour
         _UIbullets.SetActive(false);
     }
 
-    private void changeValueBullets()
+    private void ChangeValueBullets()
     {
         _bullets.text = _weaponManager._currentBullets.ToString() + "/" + _weaponManager._bullets.ToString();
     }

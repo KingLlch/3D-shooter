@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletManager : MonoBehaviour
+public class BulletSpawner : MonoBehaviour
 {
-    private RayCastController _rayCastController;
+    private RayCastManager _rayCastManager;
     private PlayerController _playerController;
     private WeaponManager _weaponManager;
 
@@ -15,13 +15,12 @@ public class BulletManager : MonoBehaviour
     {
         _weaponManager = GameObject.FindObjectOfType<WeaponManager>();
         _playerController = GameObject.Find("Player").GetComponent<PlayerController>();
-        _playerController.Shot.AddListener(shot);
-        _rayCastController = GameObject.FindObjectOfType<RayCastController>();
+        _weaponManager.ShotWithPatrons.AddListener(shot);
+        _rayCastManager = GameObject.FindObjectOfType<RayCastManager>();
     }
 
     private void shot()
     {
-        if(_weaponManager._currentBullets>0)
-        Instantiate(_gameObject, _rayCastController._rayCastHit.point,Quaternion.identity);
+        Instantiate(_gameObject, _rayCastManager._rayCastHit.point,Quaternion.identity);
     }
 }

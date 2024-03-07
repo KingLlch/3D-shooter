@@ -2,45 +2,72 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class WeaponManager : MonoBehaviour
 {
     private PlayerController _playerController;
-    private SoundManager _soundManager;
+    private PickUpController _pickUpController;
 
     public int _currentBullets = 0;
     public int _maxBullets = 30;
     public int _bullets = 200;
 
+    [HideInInspector] public UnityEvent ShotWithPatrons;
+    [HideInInspector] public UnityEvent ShotWithoutPatrons;
+    [HideInInspector] public UnityEvent Reload;
 
     private void Awake()
     {
         _playerController = GameObject.FindObjectOfType<PlayerController>();
-        _soundManager = GameObject.FindObjectOfType<SoundManager>();
+        _pickUpController = GameObject.FindObjectOfType<PickUpController>();
+
+        _playerController.ShotButtonDown.AddListener(Shot);
+        _playerController.ReloadButtonDown.AddListener(reload);
     }
 
-    public void shot()
+    private void Shot()
     {
-        if (_currentBullets > 0)
+        if (_pickUpController._isPickUpWeapon == true)
         {
-            _currentBullets--;
-            _soundManager.PistolShot();
-        } 
-    }
+            if (_currentBullets > 0)
+            {
+                _currentBullets--;
+                ShotWithPatrons.Invoke();
+            }
 
-    public void reload()
-    {
-        if (( _bullets - _maxBullets - _currentBullets) >= 0)
-        {
-            _bullets -= (_maxBullets - _currentBullets);     
-            _currentBullets = _maxBullets;
+            else ShotWithoutPatrons.Invoke();
+
         }
-            
-        else
+    }
+
+    private void reload()
+    {
+        if (_pickUpController._isPickUpWeapon == true)
         {
-            _bullets -= _maxBullets - _currentBullets;
-            _currentBullets = _maxBullets + _bullets;
-            _bullets = 0;
-        }   
+            if (_bullets <= 0) return;
+
+            if ((_bullets - _maxBullets - _currentBullets) >= 0)
+            {
+                _bullets -= (_maxBullets - _currentBullets);
+                _currentBullets = _maxBullets;
+            }
+
+            else
+            {
+                _currentBullets += _bullets;
+                _bullets -= _maxBullets - _currentBullets;
+
+                if (_bullets < 0)
+                {
+                    _bullets = 0;
+                    return;
+                }
+
+                _currentBullets = _maxBullets;
+            }
+
+            Reload.Invoke();
+        }
     }
 }
