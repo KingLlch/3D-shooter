@@ -46,8 +46,8 @@ public class PickUpController : MonoBehaviour
 
             _weapon.GetComponent<RotateObject>().enabled = true;
 
-            _weapon.GetComponent<Weapon>()._currentPatrons = _weaponManager._currentPatrons;
-            _weapon.GetComponent<Weapon>()._maxPatrons = _weaponManager._maxPatrons;
+            _weapon.GetComponent<Weapon>().CurrentPatrons = _weaponManager._currentPatrons;
+            _weapon.GetComponent<Weapon>().MaxPatrons = _weaponManager._maxPatrons;
 
             PickOffWeapon.Invoke();
         }
@@ -74,9 +74,11 @@ public class PickUpController : MonoBehaviour
                 _isPickUpWeapon = true;
 
                 _weapon.GetComponent<RotateObject>().enabled = false;
-                _weaponManager._damage = _weapon.GetComponent<Weapon>()._damage;
-                _weaponManager._currentPatrons = _weapon.GetComponent<Weapon>()._currentPatrons;
-                _weaponManager._maxPatrons = _weapon.GetComponent<Weapon>()._maxPatrons;
+                _weaponManager._damage = _weapon.GetComponent<Weapon>().Damage;
+                _weaponManager._timeShot = _weapon.GetComponent<Weapon>().TimeShot;
+                _weaponManager._timeReload = _weapon.GetComponent<Weapon>().TimeReload;
+                _weaponManager._currentPatrons = _weapon.GetComponent<Weapon>().CurrentPatrons;
+                _weaponManager._maxPatrons = _weapon.GetComponent<Weapon>().MaxPatrons;
 
                 PickUpWeapon.Invoke();
             }

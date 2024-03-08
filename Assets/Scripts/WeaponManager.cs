@@ -9,10 +9,17 @@ public class WeaponManager : MonoBehaviour
     private PlayerController _playerController;
     private PickUpController _pickUpController;
 
-    public float _damage ;
+    public float _damage;
     public int _currentPatrons = 0;
     public int _maxPatrons = 30;
     public int _patrons = 200;
+    public float _timeReload;
+    public float _timeShot;
+
+    private float _timerShot;
+    private float _timerDryShot;
+
+    private bool _isShot;
 
     [HideInInspector] public UnityEvent ShotWithPatrons;
     [HideInInspector] public UnityEvent ShotWithoutPatrons;
@@ -33,12 +40,29 @@ public class WeaponManager : MonoBehaviour
         {
             if (_currentPatrons > 0)
             {
+                _timerShot += Time.fixedDeltaTime;
+                if (_timeShot <= _timerShot) _isShot = true;
+                else _isShot = false;
+
+                if (_isShot == false)
+                {
+                    return;
+                }
                 _currentPatrons--;
                 ShotWithPatrons.Invoke();
+
+                _timerShot = 0;
             }
 
-            else ShotWithoutPatrons.Invoke();
-
+            else
+            {
+                _timerDryShot += Time.fixedDeltaTime;
+                if (_timerDryShot >= 2)
+                {
+                    ShotWithoutPatrons.Invoke();
+                    _timerDryShot = 0;
+                }
+            }
         }
     }
 
@@ -59,6 +83,7 @@ public class WeaponManager : MonoBehaviour
             }
 
             Reload.Invoke();
+            _timerShot = - _timeReload;
         }
     }
 }

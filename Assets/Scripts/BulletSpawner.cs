@@ -19,6 +19,6 @@ public class BulletSpawner : MonoBehaviour
 
     private void Shot()
     {
-        Instantiate(_gameObject, _rayCastManager._rayCastHit.point,Quaternion.identity);
+        Instantiate(_gameObject, _rayCastManager._rayCastHit.point,Quaternion.identity,_rayCastManager._rayCastHit.collider.transform);
     }
 }

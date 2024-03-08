@@ -11,21 +11,23 @@ public class TakeDamage : MonoBehaviour
     private WeaponManager _weaponManager;
 
     private Camera _camera;
-    private GameObject _damageUI;
+
     private TextMeshProUGUI _damage;
+    private TextMeshProUGUI _enemyHealth;
 
     public UnityEvent Damage;
 
     private void Awake()
     {
         _camera = Camera.main;
-        _damageUI = GameObject.Find("DamageUI");
         _damage = GameObject.Find("Damage").GetComponent<TextMeshProUGUI>();
+        _enemyHealth = GameObject.Find("Health").GetComponent<TextMeshProUGUI>();
 
         _weaponManager = GameObject.FindObjectOfType<WeaponManager>();
         _rayCastManager = GameObject.FindObjectOfType<RayCastManager>();
 
         _weaponManager.ShotWithPatrons.AddListener(HitEnemy);
+        Damage.AddListener(ShowEnemyHealthPanel);
     }
 
     private void HitEnemy()
@@ -34,9 +36,14 @@ public class TakeDamage : MonoBehaviour
         {    
             _rayCastManager._rayCastHit.collider.GetComponent<Enemy>().TakeDamage(_weaponManager._damage);
             _damage.transform.position = _camera.WorldToScreenPoint(_rayCastManager._rayCastHit.point);
-            //_damage.text = _rayCastManager._rayCastHit.collider.GetComponent<Enemy>().Health.ToString();
             _damage.text = _weaponManager._damage.ToString();
             Damage.Invoke();
         }
+    }
+
+    private void ShowEnemyHealthPanel()
+    {
+        if (_rayCastManager._rayCastHit.collider != null)
+        _enemyHealth.text = _rayCastManager._rayCastHit.collider.GetComponent<Enemy>().Health.ToString();
     }
 }

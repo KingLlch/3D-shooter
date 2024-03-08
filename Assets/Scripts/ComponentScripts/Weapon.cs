@@ -7,10 +7,12 @@ public class Weapon : MonoBehaviour
 {
     private GameObject WeaponHand;
 
-    public float _damage = 10;
-    public int _typePatron;
-    public int _currentPatrons;
-    public int _maxPatrons;
+    [field: SerializeField] public float Damage { get; private set; } = 10;
+    [field: SerializeField] public int TypePatron { get; private set; }
+    [field: SerializeField] public int CurrentPatrons { get; set; }
+    [field: SerializeField] public int MaxPatrons { get; set; }
+    [field: SerializeField] public float TimeShot { get; private set; }
+    [field: SerializeField] public float TimeReload { get; private set; }
 
     private void Awake()
     {
@@ -30,7 +32,7 @@ public class Weapon : MonoBehaviour
     public void PickOff()
     {
         gameObject.transform.SetParent(null, true);
-        gameObject.transform.position = new Vector3(gameObject.transform.position.x, 0, gameObject.transform.position.z);
+        gameObject.transform.position = new Vector3(gameObject.transform.position.x, 0.1f, gameObject.transform.position.z);
         gameObject.GetComponent<BoxCollider>().enabled = true;
         //gameObject.GetComponent<Rigidbody>().isKinematic = false;
     }
