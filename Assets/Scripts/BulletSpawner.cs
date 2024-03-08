@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BulletSpawner : MonoBehaviour
@@ -19,6 +17,7 @@ public class BulletSpawner : MonoBehaviour
 
     private void Shot()
     {
+        if (_rayCastManager._rayCastHit.collider != null)
         Instantiate(_gameObject, _rayCastManager._rayCastHit.point,Quaternion.identity,_rayCastManager._rayCastHit.collider.transform);
     }
 }

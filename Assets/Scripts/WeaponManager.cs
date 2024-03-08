@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -15,15 +12,17 @@ public class WeaponManager : MonoBehaviour
     public int _patrons = 200;
     public float _timeReload;
     public float _timeShot;
+    public float _recoil = 0.3f;
 
-    private float _timerShot;
+    private float _timerShot; 
+    private float _timerReload;
     private float _timerDryShot;
 
     private bool _isShot;
 
     [HideInInspector] public UnityEvent ShotWithPatrons;
     [HideInInspector] public UnityEvent ShotWithoutPatrons;
-    [HideInInspector] public UnityEvent Reload;
+    [HideInInspector] public UnityEvent ReloadEvent;
 
     private void Awake()
     {
@@ -31,7 +30,7 @@ public class WeaponManager : MonoBehaviour
         _pickUpController = GameObject.FindObjectOfType<PickUpController>();
 
         _playerController.ShotButtonDown.AddListener(Shot);
-        _playerController.ReloadButtonDown.AddListener(reload);
+        _playerController.ReloadButtonDown.AddListener(Reload);
     }
 
     private void Shot()
@@ -40,18 +39,23 @@ public class WeaponManager : MonoBehaviour
         {
             if (_currentPatrons > 0)
             {
+
+                _timerReload += Time.fixedDeltaTime;
+                if (_timerReload <= 0) return;
                 _timerShot += Time.fixedDeltaTime;
-                if (_timeShot <= _timerShot) _isShot = true;
+                if (_timerShot >= _timeShot) _isShot = true;
                 else _isShot = false;
 
                 if (_isShot == false)
                 {
                     return;
                 }
+                _timerShot = 0;
+
+                Recoil();
+
                 _currentPatrons--;
                 ShotWithPatrons.Invoke();
-
-                _timerShot = 0;
             }
 
             else
@@ -66,7 +70,12 @@ public class WeaponManager : MonoBehaviour
         }
     }
 
-    private void reload()
+    private void Recoil()
+    {
+        _playerController._head.transform.Rotate(-_recoil - Random.Range(0.1f,0.6f), 0, 0);
+    }
+
+    private void Reload()
     {
         if (_pickUpController._isPickUpWeapon == true)
         {
@@ -82,8 +91,8 @@ public class WeaponManager : MonoBehaviour
                 _patrons = 0;
             }
 
-            Reload.Invoke();
-            _timerShot = - _timeReload;
+            ReloadEvent.Invoke();
+            _timerReload = - _timeReload;
         }
     }
 }

@@ -16,7 +16,7 @@ public class SoundManager : MonoBehaviour
 
         _weaponManager.ShotWithPatrons.AddListener(ShotWithPatrons);
         _weaponManager.ShotWithoutPatrons.AddListener(ShotWithoutPatrons);
-        _weaponManager.Reload.AddListener(Reload);
+        _weaponManager.ReloadEvent.AddListener(Reload);
     }
     private void ShotWithPatrons()
     {

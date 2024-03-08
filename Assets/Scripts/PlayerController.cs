@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.Events;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
-    private GameObject _head;
+    public GameObject _head;
 
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _runSpeedCofficient;
@@ -46,6 +44,27 @@ public class PlayerController : MonoBehaviour
         _moveVertical = Input.GetAxisRaw("Vertical");
         _moveHorizontal = Input.GetAxisRaw("Horizontal");
 
+        gameObject.transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * _rotationSpeed);
+
+        _headRotate = _head.transform.eulerAngles;
+        _headRotate.x -= Input.GetAxis("Mouse Y") * _rotationSpeed;
+        _headRotate.x = LockRotation(_headRotate.x);
+        _head.transform.eulerAngles = _headRotate;
+
+        _velocity = new Vector3(_moveHorizontal * _speed, _velocity.y, _moveVertical * _speed);
+
+        if (_isGrounded == true)
+        {
+
+            if (Input.GetKeyDown(KeyCode.Space) && (_isJumping == false))
+            {
+                _velocity.y = _jumpSpeed;
+                _isJumping = true;
+            }
+        }
+
+        gameObject.GetComponent<Rigidbody>().velocity = Vector3.up * gameObject.GetComponent<Rigidbody>().velocity.y + transform.TransformDirection(_velocity);
+
         if (Input.GetKey(KeyCode.LeftShift))
         {
             _speed = _moveSpeed * _runSpeedCofficient;
@@ -54,26 +73,6 @@ public class PlayerController : MonoBehaviour
         {
             _speed = _moveSpeed;
         }
-
-        _velocity = new Vector3(_moveHorizontal * _speed, _velocity.y, _moveVertical * _speed);
-
-        gameObject.transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * _rotationSpeed);
-
-        _headRotate = _head.transform.eulerAngles;
-        _headRotate.x -= Input.GetAxis("Mouse Y") * _rotationSpeed;
-        _headRotate.x = LockRotation(_headRotate.x);
-        _head.transform.eulerAngles = _headRotate;
-
-        if (_isGrounded == true)
-        {
-            if (Input.GetKeyDown(KeyCode.Space) && (_isJumping == false))
-            {
-                _velocity.y = _jumpSpeed;
-                _isJumping = true;
-            }
-        }
-
-        gameObject.GetComponent<Rigidbody>().velocity = transform.TransformDirection(_velocity);
 
         if (Input.GetKeyDown(KeyCode.E))
         {

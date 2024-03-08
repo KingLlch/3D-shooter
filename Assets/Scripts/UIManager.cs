@@ -1,10 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEngine.EventSystems;
+using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
@@ -24,7 +19,7 @@ public class UIManager : MonoBehaviour
         _pickUpController.PickUpWeapon.AddListener(PickWeapon);
         _pickUpController.PickOffWeapon.AddListener(DropWeapon);
         _weaponManager.ShotWithPatrons.AddListener(ChangeValueBullets);
-        _weaponManager.Reload.AddListener(ChangeValueBullets);
+        _weaponManager.ReloadEvent.AddListener(ChangeValueBullets);
 
         _bulletsUI.SetActive(false);
     }
