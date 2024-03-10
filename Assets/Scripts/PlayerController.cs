@@ -19,8 +19,10 @@ public class PlayerController : MonoBehaviour
     private bool _isJumping;
     private bool _isGrounded;
 
-    [HideInInspector] public UnityEvent ShotButtonDown;
+    [HideInInspector] public UnityEvent ShotButtonDownSingle;
+    [HideInInspector] public UnityEvent ShotButtonDownMulti;
     [HideInInspector] public UnityEvent ReloadButtonDown;
+    [HideInInspector] public UnityEvent ChangeTypeShot;
     [HideInInspector] public UnityEvent PickWeaponOrItemButtonDown;
     [HideInInspector] public UnityEvent DropWeaponButtonDown;
     [HideInInspector] public UnityEvent DropItemButtonDown;
@@ -91,12 +93,22 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetMouseButton(0))
         {
-            ShotButtonDown.Invoke();
+            ShotButtonDownMulti.Invoke();
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            ShotButtonDownSingle.Invoke();
         }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
             ReloadButtonDown.Invoke();
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            ChangeTypeShot.Invoke();
         }
     }
 

@@ -130,7 +130,7 @@ MonoBehaviour:
   <CurrentPatrons>k__BackingField: 0
   <MaxPatrons>k__BackingField: 15
   <TimeShot>k__BackingField: 1
-  <TimeReload>k__BackingField: 2
+  <TimeReload>k__BackingField: 1
 --- !u!114 &8007295318050052376
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ public class Weapon : MonoBehaviour
     [field: SerializeField] public int MaxPatrons { get; set; }
     [field: SerializeField] public float TimeShot { get; private set; }
     [field: SerializeField] public float TimeReload { get; private set; }
+    [field: SerializeField] public bool IsSingleShot { get; set; }
 
     private void Awake()
     {

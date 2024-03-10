@@ -45,6 +45,7 @@ public class PickUpController : MonoBehaviour
 
             _weapon.GetComponent<Weapon>().CurrentPatrons = _weaponManager._currentPatrons;
             _weapon.GetComponent<Weapon>().MaxPatrons = _weaponManager._maxPatrons;
+            _weapon.GetComponent<Weapon>().IsSingleShot = _weaponManager._isSingleShoot;
 
             PickOffWeapon.Invoke();
         }
@@ -76,6 +77,7 @@ public class PickUpController : MonoBehaviour
                 _weaponManager._timeReload = _weapon.GetComponent<Weapon>().TimeReload;
                 _weaponManager._currentPatrons = _weapon.GetComponent<Weapon>().CurrentPatrons;
                 _weaponManager._maxPatrons = _weapon.GetComponent<Weapon>().MaxPatrons;
+                _weaponManager._isSingleShoot = _weapon.GetComponent<Weapon>().IsSingleShot;
 
                 PickUpWeapon.Invoke();
             }

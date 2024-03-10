@@ -617,6 +617,7 @@ MonoBehaviour:
   _timeReload: 0
   _timeShot: 0
   _recoil: 1
+  _isSingleShoot: 1
   ShotWithPatrons:
     m_PersistentCalls:
       m_Calls: []
@@ -1486,10 +1487,16 @@ MonoBehaviour:
   _rotationSpeed: 1
   _jumpSpeed: 0.2
   _playerHigh: 1
-  ShotButtonDown:
+  ShotButtonDownSingle:
+    m_PersistentCalls:
+      m_Calls: []
+  ShotButtonDownMulti:
     m_PersistentCalls:
       m_Calls: []
   ReloadButtonDown:
+    m_PersistentCalls:
+      m_Calls: []
+  ChangeTypeShot:
     m_PersistentCalls:
       m_Calls: []
   PickWeaponOrItemButtonDown:
