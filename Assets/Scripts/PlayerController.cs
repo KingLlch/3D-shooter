@@ -1,9 +1,11 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
-    public GameObject _head;
+    public GameObject Head;
+    public GameObject Medpack;
 
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _runSpeedCofficient;
@@ -11,11 +13,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _jumpSpeed;
     [SerializeField] private float _playerHigh;
 
+    private float _collisionTimer;
     private float _speed;
     private float _moveHorizontal;
     private float _moveVertical;
+
     private Vector3 _velocity;
     private Vector3 _headRotate;
+
     private bool _isJumping;
     private bool _isGrounded;
 
@@ -26,10 +31,12 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public UnityEvent PickWeaponOrItemButtonDown;
     [HideInInspector] public UnityEvent DropWeaponButtonDown;
     [HideInInspector] public UnityEvent DropItemButtonDown;
+    [HideInInspector] public UnityEvent CollisionWithEnemy;
+    [HideInInspector] public UnityEvent CollisionWithMedpack;
 
     private void Awake()
     {
-        _head = GameObject.Find("Head");
+        Head = GameObject.Find("Head");
     }
 
     private void Start()
@@ -48,10 +55,10 @@ public class PlayerController : MonoBehaviour
 
         gameObject.transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * _rotationSpeed);
 
-        _headRotate = _head.transform.eulerAngles;
+        _headRotate = Head.transform.eulerAngles;
         _headRotate.x -= Input.GetAxis("Mouse Y") * _rotationSpeed;
         _headRotate.x = LockRotation(_headRotate.x);
-        _head.transform.eulerAngles = _headRotate;
+        Head.transform.eulerAngles = _headRotate;
 
         _velocity = new Vector3(_moveHorizontal * _speed, _velocity.y, _moveVertical * _speed);
 
@@ -136,5 +143,25 @@ public class PlayerController : MonoBehaviour
         if (angle < angleMin) angle = angleMin;
 
         return angle;
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        _collisionTimer += Time.fixedDeltaTime;
+
+        if ((collision.gameObject.tag == "Enemy") && (_collisionTimer >= 1))
+        {
+            CollisionWithEnemy.Invoke();
+            _collisionTimer = 0;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.GetComponent<Medpack>() == true)
+        {
+            Medpack = collision.gameObject;
+            CollisionWithMedpack.Invoke();
+        }
     }
 }

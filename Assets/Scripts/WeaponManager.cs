@@ -6,20 +6,20 @@ public class WeaponManager : MonoBehaviour
     private PlayerController _playerController;
     private PickUpController _pickUpController;
 
-    public float _damage;
-    public int _currentPatrons = 0;
-    public int _maxPatrons = 30;
-    public int _patrons = 200;
-    public float _timeReload;
-    public float _timeShot;
-    public float _recoil = 0.3f;
-
     private float _timerShot; 
     private float _timerReload;
     private float _timerDryShot;
 
     private bool _isShot;
     public bool _isSingleShoot = true;
+
+    [HideInInspector] public int _currentPatrons = 0;
+    [HideInInspector] public int _maxPatrons = 30;
+    [HideInInspector] public int _patrons = 200;
+    [HideInInspector] public float _damage;
+    [HideInInspector] public float _timeReload;
+    [HideInInspector] public float _timeShot;
+    [HideInInspector] public float _recoil = 0.3f;
 
     [HideInInspector] public UnityEvent ShotWithPatrons;
     [HideInInspector] public UnityEvent ShotWithoutPatrons;
@@ -108,7 +108,7 @@ public class WeaponManager : MonoBehaviour
 
     private void Recoil()
     {
-        _playerController._head.transform.Rotate(-_recoil - Random.Range(0.1f,0.6f), 0, 0);
+        _playerController.Head.transform.Rotate(-_recoil - Random.Range(0.1f,0.6f), 0, 0);
     }
 
     private void Reload()

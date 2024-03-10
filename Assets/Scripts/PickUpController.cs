@@ -8,7 +8,9 @@ public class PickUpController : MonoBehaviour
     private WeaponManager _weaponManager;
 
     private GameObject _item, _weapon;
+
     private bool _isPickUpItem;
+
     [HideInInspector] public bool _isPickUpWeapon;
 
     [HideInInspector] public UnityEvent PickUpWeapon;
