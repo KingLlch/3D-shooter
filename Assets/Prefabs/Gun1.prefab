@@ -131,6 +131,7 @@ MonoBehaviour:
   <MaxPatrons>k__BackingField: 15
   <TimeShot>k__BackingField: 1
   <TimeReload>k__BackingField: 1
+  <IsSingleShot>k__BackingField: 1
 --- !u!114 &8007295318050052376
 MonoBehaviour:
   m_ObjectHideFlags: 0

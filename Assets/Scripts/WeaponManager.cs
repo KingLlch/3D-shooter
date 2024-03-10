@@ -24,6 +24,7 @@ public class WeaponManager : MonoBehaviour
     [HideInInspector] public UnityEvent ShotWithPatrons;
     [HideInInspector] public UnityEvent ShotWithoutPatrons;
     [HideInInspector] public UnityEvent ReloadEvent;
+    [HideInInspector] public UnityEvent ChangeTypeShotEvent;
 
     private void Awake()
     {
@@ -38,6 +39,7 @@ public class WeaponManager : MonoBehaviour
     private void ChangeTypeShot()
     {
         _isSingleShoot = !_isSingleShoot;
+        ChangeTypeShotEvent.Invoke();
 
         if (_isSingleShoot == true)
         {

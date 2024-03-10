@@ -8,7 +8,7 @@ public class AnimationController : MonoBehaviour
     {
         _takeDamage = GameObject.FindObjectOfType<TakeDamage>();
 
-        _takeDamage.Damage.AddListener(DamageAnimation);
+        _takeDamage.HitEnemyEvent.AddListener(DamageAnimation);
     }
 
     private void DamageAnimation()
