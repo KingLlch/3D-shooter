@@ -7,7 +7,7 @@ public class UIManager : MonoBehaviour
 {
     private PickUpController _pickUpController;
     private WeaponManager _weaponManager;
-    private TakeDamage _takeDamage;
+    private TakeDamageManager _takeDamage;
     private RayCastManager _rayCastManager;
     private PlayerHealth _playerHealth;
 
@@ -42,7 +42,7 @@ public class UIManager : MonoBehaviour
 
         _pickUpController = GameObject.FindObjectOfType<PickUpController>();
         _weaponManager = GameObject.FindObjectOfType<WeaponManager>();
-        _takeDamage = GameObject.FindObjectOfType<TakeDamage>();
+        _takeDamage = GameObject.FindObjectOfType<TakeDamageManager>();
         _rayCastManager = GameObject.FindObjectOfType<RayCastManager>();
         _playerHealth = GameObject.FindObjectOfType<PlayerHealth>();
 

@@ -30,7 +30,7 @@ public class Weapon : MonoBehaviour
     public void PickOff()
     {
         gameObject.transform.SetParent(null, true);
-        gameObject.transform.position = new Vector3(gameObject.transform.position.x, 0.1f, gameObject.transform.position.z);
+        gameObject.transform.position = new Vector3(gameObject.transform.position.x, -1, gameObject.transform.position.z);
         gameObject.GetComponent<BoxCollider>().enabled = true;
         //gameObject.GetComponent<Rigidbody>().isKinematic = false;
     }

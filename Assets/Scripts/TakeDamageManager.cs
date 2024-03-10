@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class TakeDamage : MonoBehaviour
+public class TakeDamageManager : MonoBehaviour
 {
     private RayCastManager _rayCastManager;
     private WeaponManager _weaponManager;

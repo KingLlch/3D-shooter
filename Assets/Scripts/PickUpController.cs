@@ -55,34 +55,38 @@ public class PickUpController : MonoBehaviour
 
     private void PickWeaponOrItem()
     {
-        if (_isPickUpItem == false)
+        if (_rayCastManager._rayCastHit.collider != null)
         {
-            if (_rayCastManager._rayCastHit.collider.gameObject.GetComponent<Item>() && _rayCastManager.Distance <= 2f)
+            if (_isPickUpItem == false)
             {
-                _rayCastManager._rayCastHit.collider.gameObject.GetComponent<Item>().PickUp();
-                _item = _rayCastManager._rayCastHit.collider.gameObject;
-                _isPickUpItem = true;
+                if (_rayCastManager._rayCastHit.collider.gameObject.GetComponent<Item>() && _rayCastManager.Distance <= 2f)
+                {
+                    _rayCastManager._rayCastHit.collider.gameObject.GetComponent<Item>().PickUp();
+                    _item = _rayCastManager._rayCastHit.collider.gameObject;
+                    _isPickUpItem = true;
+                }
             }
-        }
 
-        if(_isPickUpWeapon == false)
-        {
-            if (_rayCastManager._rayCastHit.collider.gameObject.GetComponent<Weapon>() && _rayCastManager.Distance <= 2f)
+            if (_isPickUpWeapon == false)
             {
-                _rayCastManager._rayCastHit.collider.gameObject.GetComponent<Weapon>().PickUp();
-                _weapon = _rayCastManager._rayCastHit.collider.gameObject;
-                _isPickUpWeapon = true;
+                if (_rayCastManager._rayCastHit.collider.gameObject.GetComponent<Weapon>() && _rayCastManager.Distance <= 2f)
+                {
+                    _rayCastManager._rayCastHit.collider.gameObject.GetComponent<Weapon>().PickUp();
+                    _weapon = _rayCastManager._rayCastHit.collider.gameObject;
+                    _isPickUpWeapon = true;
 
-                _weapon.GetComponent<RotateObject>().enabled = false;
-                _weaponManager._damage = _weapon.GetComponent<Weapon>().Damage;
-                _weaponManager._timeShot = _weapon.GetComponent<Weapon>().TimeShot;
-                _weaponManager._timeReload = _weapon.GetComponent<Weapon>().TimeReload;
-                _weaponManager._currentPatrons = _weapon.GetComponent<Weapon>().CurrentPatrons;
-                _weaponManager._maxPatrons = _weapon.GetComponent<Weapon>().MaxPatrons;
-                _weaponManager._isSingleShoot = _weapon.GetComponent<Weapon>().IsSingleShot;
+                    _weapon.GetComponent<RotateObject>().enabled = false;
+                    _weaponManager._damage = _weapon.GetComponent<Weapon>().Damage;
+                    _weaponManager._timeShot = _weapon.GetComponent<Weapon>().TimeShot;
+                    _weaponManager._timeReload = _weapon.GetComponent<Weapon>().TimeReload;
+                    _weaponManager._currentPatrons = _weapon.GetComponent<Weapon>().CurrentPatrons;
+                    _weaponManager._maxPatrons = _weapon.GetComponent<Weapon>().MaxPatrons;
+                    _weaponManager._isSingleShoot = _weapon.GetComponent<Weapon>().IsSingleShot;
 
-                PickUpWeapon.Invoke();
+                    PickUpWeapon.Invoke();
+                }
             }
+
         }
     }
 }

@@ -3,12 +3,12 @@ using UnityEngine;
 public class AnimationController : MonoBehaviour
 {
     [SerializeField] private Animator Damage;
-    private TakeDamage _takeDamage;
+    private TakeDamageManager _takeDamage;
     private void Awake()
     {
-        _takeDamage = GameObject.FindObjectOfType<TakeDamage>();
+        _takeDamage = GameObject.FindObjectOfType<TakeDamageManager>();
 
-        _takeDamage.ChangePlayerHealth.AddListener(DamageAnimation);
+        _takeDamage.ChangeEnemyHealth.AddListener(DamageAnimation);
     }
 
     private void DamageAnimation()
