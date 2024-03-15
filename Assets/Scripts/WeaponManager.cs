@@ -43,9 +43,8 @@ public class WeaponManager : MonoBehaviour
     private void ChangeTypeShot()
     {
         _isSingleShoot = !_isSingleShoot;
-        ChangeTypeShotEvent.Invoke();
 
-        if (_isSingleShoot == true)
+        if (_isSingleShoot)
         {
             _playerController.ShotButtonDownMulti.RemoveListener(Shot);
             _playerController.ShotButtonDownSingle.AddListener(Shot);
@@ -57,6 +56,8 @@ public class WeaponManager : MonoBehaviour
             _playerController.ShotButtonDownSingle.RemoveListener(Shot);
             _playerController.ShotButtonDownMulti.AddListener(Shot);
         }
+
+        ChangeTypeShotEvent.Invoke();
     }
 
     private void Shot()

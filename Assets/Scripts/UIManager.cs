@@ -58,9 +58,10 @@ public class UIManager : MonoBehaviour
 
         _pickUpController.PickUpWeapon.AddListener(PickWeapon);
         _pickUpController.PickOffWeapon.AddListener(DropWeapon);
+        _pickUpController.PickOffWeapon.AddListener(ShowTypeShot);
         _weaponManager.ShotWithPatrons.AddListener(ChangeValueAmmo);
         _weaponManager.ReloadEvent.AddListener(ChangeValueAmmo);
-        _weaponManager.ChangeTypeShotEvent.AddListener(ChangeTypeShot);
+        _weaponManager.ChangeTypeShotEvent.AddListener(ShowTypeShot);
         _collideManager.ChangePlayerHealth.AddListener(ShowPlayerHealth);
         _collideManager.ChangeValueAmmo.AddListener(ChangeValueAmmo);
         _collideManager.ChangeEnemyHealth.AddListener(ShowEnemyHealth);
@@ -119,18 +120,18 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void ChangeTypeShot()
+    private void ShowTypeShot()
     {
-        if (_changeTypeShotUI[1].activeInHierarchy == true)
+        if (_weaponManager._isSingleShoot)
+        {
+            _changeTypeShotUI[0].SetActive(false);
+            _changeTypeShotUI[1].SetActive(true);
+        }
+        else
         {
             _changeTypeShotUI[1].SetActive(false);
             _changeTypeShotUI[0].SetActive(true);
         }
-        else 
-        {
-            _changeTypeShotUI[0].SetActive(false);
-            _changeTypeShotUI[1].SetActive(true);
-        } 
     }
 
     private void ShowPlayerHealth()
