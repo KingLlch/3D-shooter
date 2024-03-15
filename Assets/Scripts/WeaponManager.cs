@@ -5,6 +5,7 @@ public class WeaponManager : MonoBehaviour
 {
     private PlayerController _playerController;
     private PickUpController _pickUpController;
+    private PlayerHealthAndAmmo _playerHealthAndAmmo;
 
     private float _timerShot; 
     private float _timerReload;
@@ -13,9 +14,11 @@ public class WeaponManager : MonoBehaviour
     private bool _isShot;
     public bool _isSingleShoot = true;
 
-    [HideInInspector] public int _currentPatrons = 0;
-    [HideInInspector] public int _maxPatrons = 30;
-    [HideInInspector] public int _patrons = 200;
+    public int CurrentAmmo { get; private set; } = 0;
+    public int MaxAmmo { get; private set; } = 30;
+
+    [HideInInspector] public int _typeAmmo;
+
     [HideInInspector] public float _damage;
     [HideInInspector] public float _timeReload;
     [HideInInspector] public float _timeShot;
@@ -30,6 +33,7 @@ public class WeaponManager : MonoBehaviour
     {
         _playerController = GameObject.FindObjectOfType<PlayerController>();
         _pickUpController = GameObject.FindObjectOfType<PickUpController>();
+        _playerHealthAndAmmo = GameObject.FindObjectOfType<PlayerHealthAndAmmo>();
 
         _playerController.ShotButtonDownSingle.AddListener(Shot);
         _playerController.ReloadButtonDown.AddListener(Reload);
@@ -59,13 +63,13 @@ public class WeaponManager : MonoBehaviour
     {
         if (_pickUpController._isPickUpWeapon == true)
         {
-            if (_currentPatrons > 0)
+            if (CurrentAmmo > 0)
             {
                 if (_isSingleShoot == true)
                 {
                     Recoil();
 
-                    _currentPatrons--;
+                    CurrentAmmo--;
                     ShotWithPatrons.Invoke();
                     return;
                 }
@@ -83,7 +87,7 @@ public class WeaponManager : MonoBehaviour
 
                 Recoil();
 
-                _currentPatrons--;
+                CurrentAmmo--;
                 ShotWithPatrons.Invoke();
             }
 
@@ -115,20 +119,30 @@ public class WeaponManager : MonoBehaviour
     {
         if (_pickUpController._isPickUpWeapon == true)
         {
-            if ((_patrons - _maxPatrons + _currentPatrons) >= 0)
+            if ((_playerHealthAndAmmo.Ammo[_typeAmmo] - MaxAmmo + CurrentAmmo) >= 0)
             {
-                _patrons -= (_maxPatrons - _currentPatrons);
-                _currentPatrons = _maxPatrons;
+                _playerHealthAndAmmo.Ammo[_typeAmmo] -= (MaxAmmo - CurrentAmmo);
+                CurrentAmmo = MaxAmmo;
             }
 
             else
             {
-                _currentPatrons += _patrons;
-                _patrons = 0;
+                CurrentAmmo += _playerHealthAndAmmo.Ammo[_typeAmmo];
+                _playerHealthAndAmmo.Ammo[_typeAmmo] = 0;
             }
 
             ReloadEvent.Invoke();
             _timerReload = - _timeReload;
         }
     }
+    public void SetCurrentAmmo(int curentAmmo)
+    {
+        CurrentAmmo = curentAmmo;
+    }
+
+    public void SetMaxAmmo(int maxAmmo)
+    {
+        MaxAmmo = maxAmmo;
+    }
+
 }

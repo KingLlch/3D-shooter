@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealthAndAmmo : MonoBehaviour
 {
     [field: SerializeField] public float MaxHealth { get; private set; } = 100;
     [field: SerializeField] public float Health { get; private set; } = 100;
 
+    [field: SerializeField] public int[] Ammo { get; private set; } = new int[2];
+
     [HideInInspector] public UnityEvent GameOver;
+
     public void TakeDamage(float damage)
     {
         Health -= damage;
@@ -27,5 +30,10 @@ public class PlayerHealth : MonoBehaviour
         {
             Health = MaxHealth;
         }
+    }
+
+    public void GetAmmo(int typeAmmo, int ammo)
+    {
+        Ammo[typeAmmo] += ammo;
     }
 }

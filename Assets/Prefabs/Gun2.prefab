@@ -129,9 +129,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Damage>k__BackingField: 5
-  <TypePatron>k__BackingField: 0
-  <CurrentPatrons>k__BackingField: 0
-  <MaxPatrons>k__BackingField: 30
+  <TypeAmmo>k__BackingField: 1
+  <CurrentAmmo>k__BackingField: 0
+  <MaxAmmo>k__BackingField: 30
   <TimeShot>k__BackingField: 0.2
   <TimeReload>k__BackingField: 3
   <IsSingleShot>k__BackingField: 1
@@ -148,3 +148,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speedRotation: 1
+  RotationVector: {x: 0, y: 1, z: 0}

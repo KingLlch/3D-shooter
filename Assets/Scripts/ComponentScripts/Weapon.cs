@@ -5,9 +5,9 @@ public class Weapon : MonoBehaviour
     private GameObject WeaponHand;
 
     [field: SerializeField] public float Damage { get; private set; } = 10;
-    [field: SerializeField] public int TypePatron { get; private set; }
-    [field: SerializeField] public int CurrentPatrons { get; set; }
-    [field: SerializeField] public int MaxPatrons { get; set; }
+    [field: SerializeField] public int TypeAmmo { get; private set; }
+    [field: SerializeField] public int CurrentAmmo { get; set; }
+    [field: SerializeField] public int MaxAmmo { get; set; }
     [field: SerializeField] public float TimeShot { get; private set; }
     [field: SerializeField] public float TimeReload { get; private set; }
     [field: SerializeField] public bool IsSingleShot { get; set; }

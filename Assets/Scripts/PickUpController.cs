@@ -45,8 +45,8 @@ public class PickUpController : MonoBehaviour
 
             _weapon.GetComponent<RotateObject>().enabled = true;
 
-            _weapon.GetComponent<Weapon>().CurrentPatrons = _weaponManager._currentPatrons;
-            _weapon.GetComponent<Weapon>().MaxPatrons = _weaponManager._maxPatrons;
+            _weapon.GetComponent<Weapon>().CurrentAmmo = _weaponManager.CurrentAmmo;
+            _weapon.GetComponent<Weapon>().MaxAmmo = _weaponManager.MaxAmmo;
             _weapon.GetComponent<Weapon>().IsSingleShot = _weaponManager._isSingleShoot;
 
             PickOffWeapon.Invoke();
@@ -79,8 +79,9 @@ public class PickUpController : MonoBehaviour
                     _weaponManager._damage = _weapon.GetComponent<Weapon>().Damage;
                     _weaponManager._timeShot = _weapon.GetComponent<Weapon>().TimeShot;
                     _weaponManager._timeReload = _weapon.GetComponent<Weapon>().TimeReload;
-                    _weaponManager._currentPatrons = _weapon.GetComponent<Weapon>().CurrentPatrons;
-                    _weaponManager._maxPatrons = _weapon.GetComponent<Weapon>().MaxPatrons;
+                    _weaponManager._typeAmmo = _weapon.GetComponent<Weapon>().TypeAmmo;
+                    _weaponManager.SetCurrentAmmo(_weapon.GetComponent<Weapon>().CurrentAmmo);
+                    _weaponManager.SetMaxAmmo(_weapon.GetComponent<Weapon>().MaxAmmo);
                     _weaponManager._isSingleShoot = _weapon.GetComponent<Weapon>().IsSingleShot;
 
                     PickUpWeapon.Invoke();

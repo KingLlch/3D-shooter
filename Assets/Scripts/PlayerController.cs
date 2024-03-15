@@ -5,7 +5,10 @@ using UnityEngine.Events;
 public class PlayerController : MonoBehaviour
 {
     public GameObject Head;
+    public GameObject Enemy;
     public GameObject Medpack;
+    public GameObject Ammopack;
+    public bool IsPaused = false;
 
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _runSpeedCofficient;
@@ -33,6 +36,8 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public UnityEvent DropItemButtonDown;
     [HideInInspector] public UnityEvent CollisionWithEnemy;
     [HideInInspector] public UnityEvent CollisionWithMedpack;
+    [HideInInspector] public UnityEvent CollisionWithAmmo;
+    [HideInInspector] public UnityEvent EscapeButtonDown;
 
     private void Awake()
     {
@@ -48,6 +53,13 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            EscapeButtonDown.Invoke();
+        }
+
+        if (IsPaused) return;
+
         _velocity = Vector3.up * _velocity.y;
 
         _moveVertical = Input.GetAxisRaw("Vertical");
@@ -151,6 +163,7 @@ public class PlayerController : MonoBehaviour
 
         if ((collision.gameObject.tag == "Enemy") && (_collisionTimer >= 1))
         {
+            Enemy = collision.gameObject;
             CollisionWithEnemy.Invoke();
             _collisionTimer = 0;
         }
@@ -162,6 +175,12 @@ public class PlayerController : MonoBehaviour
         {
             Medpack = collision.gameObject;
             CollisionWithMedpack.Invoke();
+        }
+
+        if (collision.gameObject.GetComponent<Ammo>() == true)
+        {
+            Ammopack = collision.gameObject;
+            CollisionWithAmmo.Invoke();
         }
     }
 }

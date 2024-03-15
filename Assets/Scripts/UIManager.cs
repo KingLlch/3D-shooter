@@ -1,25 +1,32 @@
 using System;
 using TMPro;
+using Unity.VisualScripting;
+using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     private PickUpController _pickUpController;
     private WeaponManager _weaponManager;
-    private TakeDamageManager _takeDamage;
+    private CollideManager _collideManager;
     private RayCastManager _rayCastManager;
-    private PlayerHealth _playerHealth;
+    private PlayerHealthAndAmmo _playerHealthAndAmmo;
+    private PlayerController _playerController;
 
     private float timeHideEnemyHealth = 5;
     private float timerHideEnemyHealth;
 
-    private GameObject _bulletsUI;
+    private GameObject _ammoUI;
     private GameObject _enemyHealthUI;
     private GameObject[] _changeTypeShotUI = new GameObject[2];
+    private GameObject _pauseUI;
+    private GameObject _gameOverUI;
 
     private TextMeshProUGUI _enemyHealthTMPro;
-    private TextMeshProUGUI _bulletsTMPro;
+    private TextMeshProUGUI _ammoTMPro;
     private TextMeshProUGUI _playerHealthTMPro;
 
     private Image[] _EnemyHealthtImage = new Image[2];
@@ -27,10 +34,12 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        _bulletsUI = GameObject.Find("UI/MainCanvas/WeaponUI/BulletsUI");
+        _ammoUI = GameObject.Find("UI/MainCanvas/WeaponUI/AmmoUI");
         _enemyHealthUI = GameObject.Find("UI/MainCanvas/EnemyHealthUI");
-        _changeTypeShotUI[0] = GameObject.Find("UI/MainCanvas/WeaponUI/BulletsUI/TypeShot/TypeShotImage");
-        _changeTypeShotUI[1] = GameObject.Find("UI/MainCanvas/WeaponUI/BulletsUI/TypeShot/TypeShotImage1");
+        _changeTypeShotUI[0] = GameObject.Find("UI/MainCanvas/WeaponUI/AmmoUI/TypeShot/TypeShotImage");
+        _changeTypeShotUI[1] = GameObject.Find("UI/MainCanvas/WeaponUI/AmmoUI/TypeShot/TypeShotImage1");
+        _pauseUI = GameObject.Find("UI/MainCanvas/Pause");
+        _gameOverUI = GameObject.Find("UI/MainCanvas/GameOver");
 
         _playerHealthImage = GameObject.Find("UI/MainCanvas/HealthUI/HealthBar").GetComponent<Image>();
         _EnemyHealthtImage[0] = GameObject.Find("UI/MainCanvas/EnemyHealthUI/HealthBar").GetComponent<Image>();
@@ -38,24 +47,27 @@ public class UIManager : MonoBehaviour
 
         _enemyHealthTMPro = GameObject.Find("UI/MainCanvas/EnemyHealthUI/EnemyHealth").GetComponent<TextMeshProUGUI>();
         _playerHealthTMPro = GameObject.Find("UI/MainCanvas/HealthUI/Health").GetComponent<TextMeshProUGUI>();
-        _bulletsTMPro = GameObject.Find("UI/MainCanvas/WeaponUI/BulletsUI/Bullets").GetComponent<TextMeshProUGUI>();
+        _ammoTMPro = GameObject.Find("UI/MainCanvas/WeaponUI/AmmoUI/Ammo").GetComponent<TextMeshProUGUI>();
 
         _pickUpController = GameObject.FindObjectOfType<PickUpController>();
         _weaponManager = GameObject.FindObjectOfType<WeaponManager>();
-        _takeDamage = GameObject.FindObjectOfType<TakeDamageManager>();
+        _collideManager = GameObject.FindObjectOfType<CollideManager>();
         _rayCastManager = GameObject.FindObjectOfType<RayCastManager>();
-        _playerHealth = GameObject.FindObjectOfType<PlayerHealth>();
+        _playerHealthAndAmmo = GameObject.FindObjectOfType<PlayerHealthAndAmmo>();
+        _playerController = GameObject.FindObjectOfType<PlayerController>();
 
         _pickUpController.PickUpWeapon.AddListener(PickWeapon);
         _pickUpController.PickOffWeapon.AddListener(DropWeapon);
-        _weaponManager.ShotWithPatrons.AddListener(ChangeValueBullets);
-        _weaponManager.ReloadEvent.AddListener(ChangeValueBullets);
+        _weaponManager.ShotWithPatrons.AddListener(ChangeValueAmmo);
+        _weaponManager.ReloadEvent.AddListener(ChangeValueAmmo);
         _weaponManager.ChangeTypeShotEvent.AddListener(ChangeTypeShot);
-        _takeDamage.ChangePlayerHealth.AddListener(ShowPlayerHealth);
-        _takeDamage.ChangeEnemyHealth.AddListener(ShowEnemyHealth);
-        _playerHealth.GameOver.AddListener(GameOver);
+        _collideManager.ChangePlayerHealth.AddListener(ShowPlayerHealth);
+        _collideManager.ChangeValueAmmo.AddListener(ChangeValueAmmo);
+        _collideManager.ChangeEnemyHealth.AddListener(ShowEnemyHealth);
+        _playerHealthAndAmmo.GameOver.AddListener(GameOver);
+        _playerController.EscapeButtonDown.AddListener(Pause);
 
-        _bulletsUI.SetActive(false);
+        _ammoUI.SetActive(false);
         _enemyHealthUI.SetActive(false);
         _changeTypeShotUI[0].SetActive(false);
 
@@ -74,23 +86,23 @@ public class UIManager : MonoBehaviour
     }
     private void Start()
     {
-        ChangeValueBullets();
+        ChangeValueAmmo();
     }
 
     private void PickWeapon()
     {
-        _bulletsUI.SetActive(true);
-        ChangeValueBullets();
+        _ammoUI.SetActive(true);
+        ChangeValueAmmo();
     }
 
     private void DropWeapon()
     {
-        _bulletsUI.SetActive(false);
+        _ammoUI.SetActive(false);
     }
 
-    private void ChangeValueBullets()
+    private void ChangeValueAmmo()
     {
-        _bulletsTMPro.text = _weaponManager._currentPatrons.ToString() + "/" + _weaponManager._patrons.ToString();
+        _ammoTMPro.text = _weaponManager.CurrentAmmo.ToString() + "/" + _playerHealthAndAmmo.Ammo[_weaponManager._typeAmmo].ToString();
     }
 
     private void ShowEnemyHealth()
@@ -120,14 +132,57 @@ public class UIManager : MonoBehaviour
             _changeTypeShotUI[1].SetActive(true);
         } 
     }
+
     private void ShowPlayerHealth()
     {
-        _playerHealthTMPro.text = _playerHealth.Health.ToString();
-        _playerHealthImage.fillAmount = _playerHealth.Health / _playerHealth.MaxHealth;
+        _playerHealthTMPro.text = _playerHealthAndAmmo.Health.ToString();
+        _playerHealthImage.fillAmount = _playerHealthAndAmmo.Health / _playerHealthAndAmmo.MaxHealth;
     }
+
     private void GameOver()
     {
-        Debug.Log("GameOver");
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Confined;
+
+        _gameOverUI.SetActive(true);
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void Pause()
+    {
+        if (_playerController.IsPaused)
+        {
+            Resume();
+            return;
+        }
+
+        Time.timeScale = 0;
+
+        _playerController.IsPaused = true;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Confined;
+
+        _pauseUI.SetActive(true);
+    }
+
+    public void Resume()
+    {
+        Time.timeScale = 1;
+
+        _playerController.IsPaused = false;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        _pauseUI.SetActive(false);
+    }
+
+    public void Exit()
+    {
+        Application.Quit();
     }
 
 }

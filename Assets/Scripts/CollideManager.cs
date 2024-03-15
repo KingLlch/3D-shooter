@@ -3,19 +3,21 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class TakeDamageManager : MonoBehaviour
+public class CollideManager : MonoBehaviour
 {
     private RayCastManager _rayCastManager;
     private WeaponManager _weaponManager;
     private PlayerController _playerController;
-    private PlayerHealth _playerHealth;
+    private PlayerHealthAndAmmo _playerHealthAndAmmo;
 
     private Camera _camera;
 
     private TextMeshProUGUI _damage;
 
-    public UnityEvent ChangePlayerHealth;
-    public UnityEvent ChangeEnemyHealth;
+    [HideInInspector] public UnityEvent ChangePlayerHealth;
+    [HideInInspector] public UnityEvent ChangePlayerAmmo;
+    [HideInInspector] public UnityEvent ChangeEnemyHealth;
+    [HideInInspector] public UnityEvent ChangeValueAmmo;
 
     private void Awake()
     {
@@ -25,23 +27,31 @@ public class TakeDamageManager : MonoBehaviour
         _weaponManager = GameObject.FindObjectOfType<WeaponManager>();
         _rayCastManager = GameObject.FindObjectOfType<RayCastManager>();
         _playerController = GameObject.FindObjectOfType<PlayerController>();
-        _playerHealth = GameObject.FindObjectOfType<PlayerHealth>();
+        _playerHealthAndAmmo = GameObject.FindObjectOfType<PlayerHealthAndAmmo>();
 
         _weaponManager.ShotWithPatrons.AddListener(HitEnemy);
         _playerController.CollisionWithEnemy.AddListener(EnemyHit);
         _playerController.CollisionWithMedpack.AddListener(PickUpMedpack);
+        _playerController.CollisionWithAmmo.AddListener(PickUpAmmo);
+    }
+
+    private void PickUpAmmo()
+    {
+        _playerHealthAndAmmo.GetAmmo(_playerController.Ammopack.GetComponent<Ammo>().TypeAmmo,_playerController.Ammopack.GetComponent<Ammo>().Ammunition);
+        Destroy(_playerController.Ammopack);
+        ChangeValueAmmo.Invoke();
     }
 
     private void PickUpMedpack()
     {
-        _playerHealth.GetHealth(_playerController.Medpack.GetComponent<Medpack>().Heal);
+        _playerHealthAndAmmo.GetHealth(_playerController.Medpack.GetComponent<Medpack>().Heal);
         Destroy(_playerController.Medpack);
         ChangePlayerHealth.Invoke();
     }
 
     private void EnemyHit()
     {
-        _playerHealth.TakeDamage(_rayCastManager._rayCastHit.collider.GetComponent<Enemy>().Damage);
+        _playerHealthAndAmmo.TakeDamage(_playerController.Enemy.GetComponent<Enemy>().Damage);
         ChangePlayerHealth.Invoke();
     }
 
