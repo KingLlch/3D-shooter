@@ -22,7 +22,8 @@ public class UIManager : MonoBehaviour
     private GameObject _gameOverUI;
 
     private TextMeshProUGUI _enemyHealthTMPro;
-    private TextMeshProUGUI _ammoTMPro;
+    private TextMeshProUGUI _ammoTMPro; 
+    private TextMeshProUGUI _allAmmoTMPro;
     private TextMeshProUGUI _playerHealthTMPro;
 
     private Image[] _EnemyHealthtImage = new Image[2];
@@ -44,6 +45,7 @@ public class UIManager : MonoBehaviour
         _enemyHealthTMPro = GameObject.Find("UI/MainCanvas/EnemyHealthUI/EnemyHealth").GetComponent<TextMeshProUGUI>();
         _playerHealthTMPro = GameObject.Find("UI/MainCanvas/HealthUI/Health").GetComponent<TextMeshProUGUI>();
         _ammoTMPro = GameObject.Find("UI/MainCanvas/WeaponUI/AmmoUI/Ammo").GetComponent<TextMeshProUGUI>();
+        _allAmmoTMPro = GameObject.Find("UI/MainCanvas/WeaponUI/AmmoUI/AllAmmo").GetComponent<TextMeshProUGUI>();
 
         _pickUpController = GameObject.FindObjectOfType<PickUpController>();
         _weaponManager = GameObject.FindObjectOfType<WeaponManager>();
@@ -99,7 +101,8 @@ public class UIManager : MonoBehaviour
 
     private void ChangeValueAmmo()
     {
-        _ammoTMPro.text = _weaponManager.CurrentAmmo.ToString() + "/" + _playerHealthAndAmmo.Ammo[_weaponManager._typeAmmo].ToString();
+        _ammoTMPro.text = _weaponManager.CurrentAmmo.ToString() + "/" + _weaponManager.MaxAmmo.ToString();
+        _allAmmoTMPro.text = _playerHealthAndAmmo.Ammo[_weaponManager._typeAmmo].ToString();
     }
 
     private void ShowEnemyHealth()

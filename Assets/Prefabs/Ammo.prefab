@@ -48,6 +48,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5372558332763304934, guid: 84e63da21178f9141bf4bceff3589b1f, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2180f354a3ce8a9409ca9fd58538a53c, type: 2}
+    - target: {fileID: -3266868275930475364, guid: 84e63da21178f9141bf4bceff3589b1f, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2180f354a3ce8a9409ca9fd58538a53c, type: 2}
     - target: {fileID: 919132149155446097, guid: 84e63da21178f9141bf4bceff3589b1f, type: 3}
       propertyPath: m_Name
       value: Ammo
@@ -113,6 +121,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5cf1cd2bf9d1654fa6e1fd4be6504e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Ammunition>k__BackingField: 30
+  <TypeAmmo>k__BackingField: 0
 --- !u!114 &8263293300077625672
 MonoBehaviour:
   m_ObjectHideFlags: 0
