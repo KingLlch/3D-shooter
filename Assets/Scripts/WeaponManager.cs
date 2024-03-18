@@ -35,20 +35,17 @@ public class WeaponManager : MonoBehaviour
         _pickUpController = GameObject.FindObjectOfType<PickUpController>();
         _playerHealthAndAmmo = GameObject.FindObjectOfType<PlayerHealthAndAmmo>();
 
-        _playerController.ShotButtonDownSingle.AddListener(Shot);
+        _pickUpController.PickUpWeapon.AddListener(SetTypeShot);
         _playerController.ReloadButtonDown.AddListener(Reload);
         _playerController.ChangeTypeShot.AddListener(ChangeTypeShot);
     }
 
-    private void ChangeTypeShot()
+    private void SetTypeShot()
     {
-        _isSingleShoot = !_isSingleShoot;
-
         if (_isSingleShoot)
         {
             _playerController.ShotButtonDownMulti.RemoveListener(Shot);
             _playerController.ShotButtonDownSingle.AddListener(Shot);
-
         }
 
         else
@@ -58,6 +55,12 @@ public class WeaponManager : MonoBehaviour
         }
 
         ChangeTypeShotEvent.Invoke();
+    }
+
+    private void ChangeTypeShot()
+    {
+        _isSingleShoot = !_isSingleShoot;
+        SetTypeShot();
     }
 
     private void Shot()
@@ -136,6 +139,7 @@ public class WeaponManager : MonoBehaviour
             _timerReload = - _timeReload;
         }
     }
+
     public void SetCurrentAmmo(int curentAmmo)
     {
         CurrentAmmo = curentAmmo;

@@ -49,7 +49,6 @@ public class PickUpController : MonoBehaviour
             _weapon.GetComponent<Weapon>().MaxAmmo = _weaponManager.MaxAmmo;
             _weapon.GetComponent<Weapon>().IsSingleShot = _weaponManager._isSingleShoot;
 
-            _weaponManager._isSingleShoot = true;
             PickOffWeapon.Invoke();
         }
     }
