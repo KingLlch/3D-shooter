@@ -8,3 +8,4 @@ Simple 3D shooter.
 - Противники, следующие за игроком
 
 Создание 3D шутера для усвоения знаний по RayCasts, Unity3D, Unity Events, NawMesh.
+![ShooterGif](https://github.com/KingLlch/3D-shooter/assets/76882612/5d44d987-f97a-4733-8e6f-5e8bdff24e48)
