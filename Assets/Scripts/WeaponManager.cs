@@ -77,6 +77,7 @@ public class WeaponManager : MonoBehaviour
                     ShotWithPatrons.Invoke();
                     return;
                 }
+
                 _timerReload += Time.fixedDeltaTime;
                 if (_timerReload <= 0) return;
                 _timerShot += Time.fixedDeltaTime;

@@ -1,14 +1,10 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
+using Cursor = UnityEngine.Cursor;
 
 public class PlayerController : MonoBehaviour
 {
-    public GameObject Head;
-    public GameObject Enemy;
-    public GameObject Medpack;
-    public GameObject Ammopack;
-    public bool IsPaused = false;
-
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _runSpeedCofficient;
     [SerializeField] private float _rotationSpeed;
@@ -25,6 +21,7 @@ public class PlayerController : MonoBehaviour
 
     private bool _isJumping;
     private bool _isGrounded;
+    private bool _isMultiShooting = false;
 
     [HideInInspector] public UnityEvent ShotButtonDownSingle;
     [HideInInspector] public UnityEvent ShotButtonDownMulti;
@@ -38,6 +35,12 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public UnityEvent CollisionWithAmmo;
     [HideInInspector] public UnityEvent EscapeButtonDown;
 
+    [HideInInspector] public GameObject Head;
+    [HideInInspector] public GameObject Enemy;
+    [HideInInspector] public GameObject Medpack;
+    [HideInInspector] public GameObject Ammopack;
+    [HideInInspector] public bool IsPaused = false;
+
     private void Awake()
     {
         Head = GameObject.Find("Head");
@@ -47,87 +50,131 @@ public class PlayerController : MonoBehaviour
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        _speed = _moveSpeed;
     }
-
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            EscapeButtonDown.Invoke();
-        }
-
         if (IsPaused) return;
 
-        _velocity = Vector3.up * _velocity.y;
+        gameObject.GetComponent<Rigidbody>().velocity = Vector3.up * gameObject.GetComponent<Rigidbody>().velocity.y + transform.TransformDirection(_velocity);
 
-        _moveVertical = Input.GetAxisRaw("Vertical");
-        _moveHorizontal = Input.GetAxisRaw("Horizontal");
+        if (_isMultiShooting)
+        {
+            ShotButtonDownMulti.Invoke();
+        }
+    }
 
-        gameObject.transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * _rotationSpeed);
+    //new input system
+    public void EscapeMethod()
+    {
+        EscapeButtonDown.Invoke();
+    }
+
+    public void MoveMethod(InputAction.CallbackContext move)
+    {
+        if (IsPaused) return;
+
+        if (move.performed)
+        {
+            _velocity = Vector3.up * _velocity.y;
+
+            _moveVertical = move.ReadValue<Vector2>().y;
+            _moveHorizontal = move.ReadValue<Vector2>().x;
+
+            _velocity = new Vector3(_moveHorizontal * _speed, _velocity.y, _moveVertical * _speed);
+        }
+
+        else if (move.canceled)
+        {
+            _velocity = new Vector3(0, _velocity.y, 0);
+        }
+    }
+
+    public void LookMethod(InputAction.CallbackContext rotate)
+    {
+        if (IsPaused) return;
+
+        gameObject.transform.Rotate(Vector3.up * rotate.ReadValue<Vector2>().x * _rotationSpeed);
 
         _headRotate = Head.transform.eulerAngles;
-        _headRotate.x -= Input.GetAxis("Mouse Y") * _rotationSpeed;
+        _headRotate.x -= rotate.ReadValue<Vector2>().y * _rotationSpeed;
         _headRotate.x = LockRotation(_headRotate.x);
         Head.transform.eulerAngles = _headRotate;
+    }
 
-        _velocity = new Vector3(_moveHorizontal * _speed, _velocity.y, _moveVertical * _speed);
+    public void JumpMethod()
+    {
+        if (IsPaused) return;
 
         if (_isGrounded == true)
         {
-
-            if (Input.GetKeyDown(KeyCode.Space) && (_isJumping == false))
+            if (_isJumping == false)
             {
                 _velocity.y = _jumpSpeed;
                 _isJumping = true;
             }
         }
+    }
 
-        gameObject.GetComponent<Rigidbody>().velocity = Vector3.up * gameObject.GetComponent<Rigidbody>().velocity.y + transform.TransformDirection(_velocity);
+    public void HasteMethod(InputAction.CallbackContext pressed)
+    {
+        if (IsPaused) return;
 
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (pressed.performed)
         {
             _speed = _moveSpeed * _runSpeedCofficient;
         }
-        else
+
+        else if (pressed.canceled)
         {
             _speed = _moveSpeed;
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            PickWeaponOrItemButtonDown.Invoke();
-        }
+    public void ChangeTypeShotMethod()
+    {
+        if (IsPaused) return;
+        _isMultiShooting = false;
+        ChangeTypeShot.Invoke();
+    }
 
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            DropItemButtonDown.Invoke();
-        }
+    public void ReloadMethod()
+    {
+        if (IsPaused) return;
+        _isMultiShooting = false;
+        ReloadButtonDown.Invoke();
+    }
 
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            DropWeaponButtonDown.Invoke();
-        }
+    public void ShotButtonDownSingleMethod(InputAction.CallbackContext pressed)
+    {
+        if (IsPaused) return;
+        if (pressed.performed) ShotButtonDownSingle.Invoke();
+    }
 
-        if (Input.GetMouseButton(0))
-        {
-            ShotButtonDownMulti.Invoke();
-        }
+    public void ShotButtonDownMultiMethod(InputAction.CallbackContext pressed)
+    {
+        if (IsPaused) return;
+        if (pressed.performed) _isMultiShooting = true;
+        else _isMultiShooting = false;
+    }
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            ShotButtonDownSingle.Invoke();
-        }
+    public void DropWeaponButtonDownMethod()
+    {
+        if (IsPaused) return;
+        DropWeaponButtonDown.Invoke();
+    }
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            ReloadButtonDown.Invoke();
-        }
+    public void DropItemButtonDownMethod()
+    {
+        if (IsPaused) return;
+        DropItemButtonDown.Invoke();
+    }
 
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            ChangeTypeShot.Invoke();
-        }
+    public void PickWeaponOrItemButtonDownMethod()
+    {
+        if (IsPaused) return;
+        PickWeaponOrItemButtonDown.Invoke();
     }
 
     private void FixedUpdate()
